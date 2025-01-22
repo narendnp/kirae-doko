@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirae doko?</title>
+    <link rel="icon" type="image/png" href="img/notlikethis.png">
+    <!-- Tailwind CSS for minimal styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Moment.js for time calculations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <!-- Add Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --dark-purple: #2D1B36;
+            --emerald-red: #FF3366;
+            --tint-blue: #4A90E2;
+        }
+        body {
+            background-color: var(--dark-purple);
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(45deg, var(--emerald-red), var(--tint-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .counter {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.03;
+            z-index: 0;
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        .twitch-button {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <img src="img/bg.png" 
+         alt="Background" 
+         class="bg-image"
+    >
+    <img src="img/notlikethis.png" 
+         alt="NotLikeThis" 
+         class="w-32 md:w-48 mb-6"
+    >
+    
+    
+    <h1 class="text-4xl md:text-6xl font-bold mb-8 gradient-text">I Miss Kirae :(</h1>
+    
+    <div class="text-2xl md:text-3xl mb-8">Time since last stream:</div>
+    
+    <div id="counter" class="counter text-3xl md:text-5xl font-bold mb-8 text-[#FF3366]">
+        Loading...
+    </div>
+
+    <div class="text-xl mb-4">
+        Last stream was on: <span id="lastStreamDate" class="text-[#4A90E2]">Loading...</span>
+    </div>
+
+    <a href="https://www.twitch.tv/kirae_tomaru" 
+       target="_blank" 
+       class="twitch-button mt-8 px-6 py-3 bg-[#FF3366] hover:bg-[#FF4477] rounded-lg transition-colors duration-300">
+        Watch on Twitch
+    </a>
+
+    <script>
+        async function getLastStreamDate() {
+            try {
+                const response = await axios.get('https://i-miss-kirae.narendnp.workers.dev/');
+                return moment(response.data.lastStreamDate);
+            } catch (error) {
+                console.error('Error fetching last stream date:', error);
+                return moment(); // Return current time as fallback
+            }
+        }
+
+        async function updateCounter() {
+            const lastStream = await getLastStreamDate();
+            const now = moment();
+            const duration = moment.duration(now.diff(lastStream));
+            
+            const days = Math.floor(duration.asDays());
+            const hours = duration.hours();
+            const minutes = duration.minutes();
+            const seconds = duration.seconds();
+
+            document.getElementById('counter').innerHTML = 
+                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            document.getElementById('lastStreamDate').innerHTML = 
+                lastStream.format('MMMM Do YYYY, h:mm:ss a');
+        }
+
+        // Update counter every second
+        setInterval(updateCounter, 1000);
+        updateCounter();
+    </script>
+</body>
+</html>
