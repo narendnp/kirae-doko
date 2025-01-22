@@ -12,5 +12,5 @@ By utilizing a Cloudflare worker to fetch the last stream date from the Twitch A
 
 - [Kirae](https://www.twitch.tv/kirae_tomaru) (uwu)
 - therealesthomey (for the idea)
-- Oreo (for the design)
+- Oreo (cookies that I ate while making this)
 
